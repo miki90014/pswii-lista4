@@ -5,13 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,25 +26,42 @@ public class Server {
     @Column(nullable = false)
     private String ip;
 
+    @Version
+    @Column
+    private Long version;
+
+    @Column
+    private LocalDateTime createdDate;
+
+    @Column
+    private LocalDateTime lastUpdateDate;
+
+    @Column(name = "is_active")
+    private Boolean isActive = true;
+
     public Server(String name, String ip) {
         super();
         this.name = name;
         this.ip = ip;
+        this.createdDate = LocalDateTime.now();
+        this.lastUpdateDate = createdDate;
+        this.isActive = true;
     }
 
     public Long getVersion(){
-        //todo: uncomment it
-        return null;
+        return version;
     }
 
     public LocalDateTime getCreatedDate(){
-        //todo: uncomment it
-        return null;
+        return createdDate;
     }
 
     public LocalDateTime getLastUpdateDate(){
-        //todo: uncomment it
-        return null;
+        return lastUpdateDate;
     }
 
+    @PostUpdate
+    public void setLastUpdateDate() {
+        lastUpdateDate = LocalDateTime.now();
+    }
 }

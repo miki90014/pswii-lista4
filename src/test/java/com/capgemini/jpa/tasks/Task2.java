@@ -1,9 +1,12 @@
 package com.capgemini.jpa.tasks;
 
 import com.capgemini.jpa.entities.Event;
+import com.capgemini.jpa.repositories.EventRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
@@ -15,6 +18,8 @@ import static org.hamcrest.Matchers.notNullValue;
 
 @DataJpaTest
 class Task2 {
+    @Autowired
+    EventRepository eventRepository;
 
 
     @Test
@@ -28,7 +33,7 @@ class Task2 {
         Sort sort = Sort.unsorted();
 
         // when
-        Page<Event> result = null;
+        Page<Event> result = eventRepository.findByTimeBetweenAndAnalysisRequired(start, end, toBeAnalyzed, PageRequest.of(page, pageSize, sort));
 
         // then
         assertThat(result, is(notNullValue()));
