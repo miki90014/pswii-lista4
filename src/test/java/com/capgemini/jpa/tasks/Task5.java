@@ -5,23 +5,31 @@ import com.capgemini.jpa.repositories.ServerRepository;
 import com.capgemini.jpa.services.ServerService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.test.web.servlet.MockMvc;
 
 
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
+@AutoConfigureMockMvc(addFilters = false)
 @DataJpaTest
 class Task5 {
 
     @Autowired
     private ServerService serverService;
 
-    @Autowired // TODO: configure as mockrepository
+    @MockBean
     private ServerRepository serverRepositoryMock;
 
     @Test
@@ -31,10 +39,12 @@ class Task5 {
         String mockServerName = "Alex";
         String mockServerIp = "noIp";
         Server dummyServer = new Server(mockServerName, mockServerIp);
-        whenSerachingForNameReturn(serverName, dummyServer);
+        whenSerachingForNameReturn(mockServerName, dummyServer);
 
         // when
+        when(serverRepositoryMock.findByName(serverName)).thenReturn(Optional.of(dummyServer));
         Optional<Server> result = serverService.findByName(serverName);
+        System.out.println(result.get().getName());
 
         // then
         assertThat(result.isPresent(), Matchers.is(true));
@@ -43,7 +53,7 @@ class Task5 {
     }
 
     private void whenSerachingForNameReturn(String serverName, Server dummyServer) {
-        // TODO: add your mock definition here
+        when(serverRepositoryMock.findByName(serverName)).thenReturn(Optional.of(dummyServer));
     }
 
     @TestConfiguration
