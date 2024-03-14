@@ -3,6 +3,7 @@ package com.capgemini.jpa.tasks;
 import com.capgemini.jpa.configuration.AuditingConfiguration;
 import com.capgemini.jpa.entities.Server;
 import com.capgemini.jpa.repositories.ServerRepository;
+import org.hibernate.LazyInitializationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -11,10 +12,12 @@ import org.springframework.test.context.transaction.TestTransaction;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
@@ -78,6 +81,6 @@ class Task1 {
         TestTransaction.end();
 
         // then
-        assertThrows( EntityNotFoundException.class, () -> serverRepository.getById(server.getId()));
+        assertEquals(Optional.empty(), serverRepository.findById(server.getId()));
     }
 }

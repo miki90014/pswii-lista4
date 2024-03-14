@@ -51,7 +51,7 @@ class Task2 {
         Sort sort = Sort.by("time");
 
         // when
-        Page<Event> result = null;
+        Page<Event> result = eventRepository.findByTimeBetweenAndAnalysisRequired(start, end, toBeAnalyzed, PageRequest.of(page, pageSize, sort));
 
         // then
         assertThat(result, is(notNullValue()));
@@ -71,10 +71,10 @@ class Task2 {
         Sort sort = Sort.by("time");
 
         // when
-        Page<Event> result = null;
+        Page<Event> result = eventRepository.findByTimeBetweenAndAnalysisRequired(start, end, toBeAnalyzed, PageRequest.of(page, pageSize, sort));
 
         // then
-        assertThat(result.getTotalElements(), is(0));
+        assertThat(result.getTotalElements(), is(0L));
         assertThat(result.getContent(), hasSize(0));
     }
 }
